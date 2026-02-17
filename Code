@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickAid - Advanced Healthcare Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        :root {
+            --primary: #017072;
+            --primary-light: #019597;
+            --primary-dark: #015557;
+            --accent: #ff6b6b;
+            --text: #333;
+            --text-light: #777;
+            --background: #f8f9fa;
+            --card-bg: #ffffff;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --sidebar-width: 260px;
+        }
+        
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 20px 0;
+            height: 100vh;
+            position: fixed;
+            overflow-y: auto;
+            z-index: 1001;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 22px;
+            font-weight: 700;
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo i {
+            color: var(--accent);
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            margin-top: 20px;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+        
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-left: 4px solid var(--accent);
+        }
+        
+        .sidebar-menu i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            width: calc(100% - var(--sidebar-width));
+        }
+
+        .page {
+            padding: 30px;
+        }
+        .page-hidden {
+            display: none;
+        }
+        
+        /* Header */
+        .header {
+            background: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: var(--background);
+            border-radius: 50px;
+            padding: 8px 20px;
+            width: 300px;
+        }
+        
+        .search-box input {
+            border: none;
+            background: transparent;
+            width: 100%;
+            outline: none;
+            padding: 5px;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .language-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-light);
+        }
+        .language-selector select {
+            border: 1px solid #ddd;
+            background: transparent;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text);
+            cursor: pointer;
+            padding: 5px 8px;
+            border-radius: 6px;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .page-title {
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: rgba(1, 112, 114, 0.1);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        .stat-content h3 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .stat-content p {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+         .card .card-header:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .view-all {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .activity-list { list-style: none; }
+        .activity-item { display: flex; gap: 15px; padding: 15px 0; border-bottom: 1px solid #eee; }
+        .activity-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .activity-item:first-child { padding-top: 0; }
+        
+        .activity-icon {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: rgba(1, 112, 114, 0.1); color: var(--primary);
+            display: flex; align-items: center; justify-content: center;
+        }
+        
+        .activity-content { flex: 1; }
+
+        .ai-prediction, .emergency-card {
+            border-radius: 15px; padding: 20px; color: white; margin-top: 20px;
+        }
+        .ai-prediction { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); }
+        .emergency-card { background: linear-gradient(135deg, #ff6b6b, #ff5252); text-align: center; }
+
+        /* Hospitals Page */
+        .hospital-card {
+            background: var(--card-bg); border-radius: 15px; margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05); overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .hospital-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
+        .hospital-header { padding: 20px; display: flex; justify-content: space-between; align-items: flex-start; }
+        .hospital-header h3 { color: var(--primary); }
+        .hospital-header p { color: var(--text-light); font-size: 14px; }
+        .distance { font-weight: 600; color: var(--primary-light); }
+        .ai-wait-time {
+            background: rgba(255, 193, 7, 0.2); color: #856404;
+            padding: 5px 12px; border-radius: 50px;
+            font-size: 13px; font-weight: 500;
+        }
+        .hospital-details { display: grid; grid-template-columns: 1fr 1.5fr; gap: 20px; padding: 0 20px 20px; }
+        .bed-info, .blood-bank { background: var(--background); padding: 15px; border-radius: 10px; }
+        .bed-info h4, .blood-bank h4 { margin-bottom: 15px; font-weight: 600; color: var(--primary-dark); }
+        .bed-types { display: flex; gap: 20px; }
+        .bed-count { text-align: center; }
+        .bed-count .count { font-size: 24px; font-weight: 700; color: var(--success); }
+        .bed-count .label { font-size: 14px; color: var(--text-light); }
+        .blood-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); gap: 10px; }
+        .blood-type { text-align: center; background: white; padding: 8px; border-radius: 8px; border: 1px solid #eee;}
+        .blood-type .group { font-weight: 700; color: var(--danger); }
+        .blood-type .units { font-size: 12px; color: var(--text-light); }
+
+        .card-page-container { max-width: 900px; margin: 0 auto; text-align: center; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; text-align: left; margin: 30px 0; }
+        .feature-item { background: var(--card-bg); padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .feature-item i { font-size: 24px; color: var(--primary); margin-bottom: 15px; }
+        .buy-card-section { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 30px; border-radius: 15px; }
+        .buy-btn {
+            display: inline-block; background: var(--accent); color: white;
+            padding: 12px 30px; border-radius: 50px; text-decoration: none;
+            font-weight: 600; margin-top: 15px; transition: all 0.3s;
+        }
+        .buy-btn:hover { transform: scale(1.05); }
+        
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; }
+        .form-group input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; font-family: 'Poppins', sans-serif;}
+        .form-btn {
+            padding: 12px; border: none; border-radius: 8px; color: white;
+            font-weight: 600; cursor: pointer; transition: background 0.3s;
+        }
+        .btn-primary { background: var(--primary); }
+        .btn-primary:hover { background: var(--primary-dark); }
+        
+        /* Records Page */
+        .records-timeline { list-style: none; padding: 0; position: relative; }
+        .records-timeline::before {
+            content: ''; position: absolute; top: 0; left: 20px;
+            height: 100%; width: 3px; background: #e9ecef;
+        }
+        .timeline-item { position: relative; padding-left: 50px; margin-bottom: 30px; }
+        .timeline-icon {
+            position: absolute; left: 0; top: 0; width: 40px; height: 40px;
+            border-radius: 50%; background: var(--primary); color: white;
+            display: flex; align-items: center; justify-content: center;
+            border: 3px solid var(--background);
+        }
+        .timeline-content { background: var(--card-bg); padding: 20px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .timeline-date { font-size: 13px; color: var(--text-light); margin-bottom: 5px; }
+        .timeline-title { font-size: 18px; font-weight: 600; color: var(--primary-dark); }
+        .timeline-details { margin-top: 15px; font-size: 14px; }
+        .timeline-details p { margin-bottom: 8px; }
+        .timeline-details a { color: var(--primary); text-decoration: none; font-weight: 500; }
+        .timeline-details a:hover { text-decoration: underline; }
+        
+        /* NEW STYLES for Profile, Medications, etc. */
+        .profile-details p { margin-bottom: 10px; font-size: 16px; }
+        .profile-details strong { color: var(--primary-dark); margin-right: 8px; }
+
+        .medication-item { padding: 20px 0; border-bottom: 1px solid #eee; }
+        .medication-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .medication-item h4 { font-weight: 600; color: var(--text); }
+        .medication-item p { margin: 5px 0 0; color: var(--text-light); }
+
+        .form-group .switch { position: relative; display: inline-block; width: 60px; height: 34px; }
+        .form-group .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; }
+        .slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: white; transition: .4s; }
+        input:checked + .slider { background-color: var(--primary); }
+        input:checked + .slider:before { transform: translateX(26px); }
+        .slider.round { border-radius: 34px; }
+        .slider.round:before { border-radius: 50%; }
+
+        .assistant-fab {
+            position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px;
+            background-color: var(--accent); color: white; border-radius: 50%;
+            border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.2); font-size: 24px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 1002; transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .assistant-fab:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .sidebar { transform: translateX(-100%); transition: transform 0.3s; }
+            .sidebar.active { transform: translateX(0); }
+            .main-content { margin-left: 0; width: 100%; }
+        }
+        @media (max-width: 768px) {
+            .stats-cards { grid-template-columns: 1fr; }
+            .header { flex-direction: column; gap: 15px; padding: 15px; }
+            .search-box { width: 100%; }
+            .hospital-details { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <i class="fas fa-heartbeat"></i>
+            <span>QuickAid</span>
+        </div>
+        
+        <ul class="sidebar-menu">
+            <li><a href="#dashboard" class="sidebar-link active"><i class="fas fa-home"></i> <span data-key="nav_dashboard">Dashboard</span></a></li>
+            <li><a href="#hospitals" class="sidebar-link"><i class="fas fa-hospital"></i> <span data-key="nav_hospitals">Hospitals</span></a></li>
+            <li><a href="#card" class="sidebar-link"><i class="fas fa-id-card"></i> <span data-key="nav_card">QuickAid Card</span></a></li>
+            <li><a href="#records" class="sidebar-link"><i class="fas fa-notes-medical"></i> <span data-key="nav_records">Health Records</span></a></li>
+            <li><a href="#profile" class="sidebar-link"><i class="fas fa-user-circle"></i> <span data-key="nav_profile">Profile</span></a></li>
+            <li><a href="#medications" class="sidebar-link"><i class="fas fa-prescription"></i> <span data-key="nav_medications">Medications</span></a></li>
+            <li><a href="#consult" class="sidebar-link"><i class="fas fa-stethoscope"></i> <span data-key="nav_consult">Virtual Consult</span></a></li>
+            <li><a href="#settings" class="sidebar-link"><i class="fas fa-cog"></i> <span data-key="nav_settings">Settings</span></a></li>
+        </ul>
+        
+        <div class="ai-prediction">
+            <div class="prediction-content">
+                <div class="risk-level" style="text-align:center; width:100%;">
+                    <h3 data-key="ai_prediction">AI Health Prediction</h3>
+                    <div style="font-size: 32px; font-weight: 700; margin: 5px 0;" data-key="risk_low">Low</div>
+                    <div style="font-size: 14px; opacity: 0.8;" data-key="risk_level">Risk Level</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="emergency-card">
+            <h3><i class="fas fa-bell"></i> <span data-key="emergency_title">Emergency</span></h3>
+            <p data-key="emergency_desc">Press the button below to alert nearby hospitals.</p>
+            <a href="#" style="display: inline-block; background: white; color: var(--danger); padding: 10px 20px; border-radius: 50px; text-decoration: none; font-weight: 600; margin-top: 10px;" data-key="emergency_button">Emergency Alert</a>
+        </div>
+    </div>
+    
+    <div class="main-content">
+        <div class="header">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" data-key-placeholder="search_placeholder" placeholder="Search for hospitals, doctors, services...">
+            </div>
+            
+            <div class="header-right">
+                <div class="language-selector">
+                    <i class="fas fa-globe"></i>
+                    <select id="lang-switcher">
+                        <option value="en">English</option>
+                        <option value="hi">हिन्दी</option>
+                    </select>
+                </div>
+                <div class="user-profile">
+                    <div class="avatar">JD</div>
+                    <div>
+                        <div>John Doe</div>
+                        <small data-key="premium_member">Premium Member</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="page" id="dashboard-page">
+            <div class="page-header">
+                <h1 class="page-title" data-key="dashboard_title">Health Dashboard</h1>
+                <div data-key="today_date">Wednesday, September 10, 2025</div>
+            </div>
+            
+            <div class="stats-cards">
+                 <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-heartbeat"></i></div>
+                    <div class="stat-content"><h3>72 bpm</h3><p data-key="stat_hr">Heart Rate</p></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-tint"></i></div>
+                    <div class="stat-content"><h3>118/75</h3><p data-key="stat_bp">Blood Pressure</p></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-thermometer-half"></i></div>
+                    <div class="stat-content"><h3>98.6°F</h3><p data-key="stat_temp">Body Temperature</p></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-walking"></i></div>
+                    <div class="stat-content"><h3>8,542</h3><p data-key="stat_steps">Steps Today</p></div>
+                </div>
+            </div>
+            
+            <div class="dashboard-grid">
+                <div class="left-column">
+                    <div class="card">
+                        <div class="card-header"><h2 class="card-title" data-key="recent_activity">Recent Activity</h2><a href="#" class="view-all" data-key="view_all">View All</a></div>
+                        <ul class="activity-list">
+                            <li class="activity-item">
+                                <div class="activity-icon"><i class="fas fa-pills"></i></div>
+                                <div class="activity-content"><h4 data-key="activity_med_taken">Medication Taken</h4><p>Metformin 500mg taken</p></div>
+                            </li>
+                             <li class="activity-item">
+                                <div class="activity-icon"><i class="fas fa-user-md"></i></div>
+                                <div class="activity-content"><h4 data-key="activity_consult">Doctor Consultation</h4><p>Virtual consultation with Dr. Smith</p></div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="right-column">
+                    <div class="card">
+                         <div class="card-header"><h2 class="card-title" data-key="upcoming_appointments">Upcoming Appointments</h2><a href="#" class="view-all" data-key="view_all">View All</a></div>
+                         <ul class="activity-list">
+                            <li class="activity-item">
+                                <div class="activity-icon"><i class="fas fa-calendar-check"></i></div>
+                                <div class="activity-content"><h4>Dr. Priya Sharma</h4><p>Cardiologist · Tomorrow, 10:00 AM</p></div>
+                            </li>
+                         </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page page-hidden" id="hospitals-page">
+             <div class="page-header">
+                <h1 class="page-title" data-key="hospitals_title">Nearby Hospitals</h1>
+            </div>
+            <div class="hospital-list">
+                <div class="hospital-card">
+                    <div class="hospital-header">
+                        <div><h3>Apollo Hospital</h3><p>123 Health St, Raipur</p></div>
+                        <div>
+                            <div class="distance" data-key="km_away">2.5 km away</div>
+                            <div class="ai-wait-time"><i class="fas fa-brain"></i> <span data-key="ai_predicts">AI Predicts: ~15 min wait</span></div>
+                        </div>
+                    </div>
+                    <div class="hospital-details">
+                        <div class="bed-info">
+                            <h4><i class="fas fa-bed"></i> <span data-key="bed_availability">Bed Availability</span></h4>
+                            <div class="bed-types">
+                                <div class="bed-count"><div class="count">12</div><div class="label" data-key="icu_beds">ICU Beds</div></div>
+                                <div class="bed-count"><div class="count">45</div><div class="label" data-key="normal_beds">Normal Beds</div></div>
+                            </div>
+                        </div>
+                        <div class="blood-bank">
+                            <h4><i class="fas fa-tint"></i> <span data-key="blood_bank_status">Blood Bank Status</span></h4>
+                            <div class="blood-grid">
+                                <div class="blood-type"><div class="group">A+</div><div class="units" data-key="units">15 units</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page page-hidden" id="card-page">
+            <div class="card-page-container">
+                <h1 class="page-title" data-key="card_title">Unlock Premium Healthcare with the QuickAid Card</h1>
+                <p data-key="card_subtitle">Your one-stop solution for priority services, digital records, and exclusive discounts.</p>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <h4 data-key="feature_priority">Priority Access</h4>
+                        <p data-key="feature_priority_desc">Get priority appointments and reduced waiting times at our network hospitals.</p>
+                    </div>
+                     <div class="feature-item">
+                        <i class="fas fa-tags"></i>
+                        <h4 data-key="feature_discounts">Exclusive Discounts</h4>
+                        <p data-key="feature_discounts_desc">Enjoy up to 20% off on consultations, lab tests, and pharmacy bills.</p>
+                    </div>
+                     <div class="feature-item">
+                        <i class="fas fa-cloud"></i>
+                        <h4 data-key="feature_records">Secure Digital Records</h4>
+                        <p data-key="feature_records_desc">Access all your health records securely from anywhere, anytime.</p>
+                    </div>
+                </div>
+                <div class="buy-card-section">
+                    <h2 data-key="get_card_today">Get Your QuickAid Card Today!</h2>
+                    <p data-key="get_card_desc">Join thousands of members enjoying seamless healthcare. Annual subscription at just ₹999.</p>
+                    <a href="#" class="buy-btn"><i class="fas fa-credit-card"></i> <span data-key="buy_now">Buy Now</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="page page-hidden" id="records-page">
+            <div class="page-header">
+                <h1 class="page-title" data-key="records_title">John Doe's Health Records</h1>
+            </div>
+            <ul class="records-timeline">
+                <li class="timeline-item">
+                    <div class="timeline-icon"><i class="fas fa-user-md"></i></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">August 29, 2025</div>
+                        <h4 class="timeline-title">Virtual Consultation with Dr. Smith</h4>
+                        <div class="timeline-details">
+                           <p><strong data-key="record_diagnosis">Diagnosis:</strong> General fatigue and seasonal allergies.</p>
+                           <p><strong data-key="record_prescription">Prescription:</strong> Cetirizine 10mg once daily.</p>
+                           <a href="#"><i class="fas fa-download"></i> <span data-key="record_download">Download Prescription</span></a>
+                        </div>
+                    </div>
+                </li>
+                 <li class="timeline-item">
+                    <div class="timeline-icon"><i class="fas fa-notes-medical"></i></div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">July 15, 2025</div>
+                        <h4 class="timeline-title">Annual Health Checkup at Apollo Hospital</h4>
+                        <div class="timeline-details">
+                           <p><strong>Summary:</strong> All vitals are stable. Cholesterol slightly elevated.</p>
+                           <a href="#"><i class="fas fa-download"></i> Download Full Report</a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="page page-hidden" id="profile-page">
+            <div class="page-header">
+                <h1 class="page-title" data-key="profile_title">User Profile</h1>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">John Doe</h2>
+                </div>
+                <div class="profile-details">
+                    <p><strong data-key="profile_email">Email:</strong> <span>john.doe@email.com</span></p>
+                    <p><strong data-key="profile_phone">Phone:</strong> <span>+91 98765 43210</span></p>
+                    <p><strong data-key="profile_dob">Date of Birth:</strong> <span>January 1, 1985</span></p>
+                    <p><strong data-key="profile_blood">Blood Group:</strong> <span>O+</span></p>
+                    <p><strong data-key="profile_address">Address:</strong> <span>123 Health St, Raipur, Chhattisgarh</span></p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title" data-key="emergency_contact_title">Emergency Contact</h2>
+                </div>
+                <div class="profile-details">
+                    <p><strong data-key="profile_name">Name:</strong> <span>Jane Doe</span></p>
+                    <p><strong data-key="profile_relation">Relation:</strong> <span>Spouse</span></p>
+                    <p><strong data-key="profile_phone">Phone:</strong> <span>+91 98765 12345</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="page page-hidden" id="medications-page">
+            <div class="page-header">
+                <h1 class="page-title" data-key="medications_title">My Medications</h1>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title" data-key="current_meds_title">Current Prescriptions</h2>
+                </div>
+                <div class="medication-item">
+                    <h4>Metformin 500mg</h4>
+                    <p><strong>Dosage:</strong> 1 tablet, twice daily after meals</p>
+                    <p><strong>Prescribed by:</strong> Dr. Smith for Type 2 Diabetes</p>
+                </div>
+                <div class="medication-item">
+                    <h4>Cetirizine 10mg</h4>
+                    <p><strong>Dosage:</strong> 1 tablet, once daily at night</p>
+                    <p><strong>Prescribed by:</strong> Dr. Smith for Seasonal Allergies</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="page page-hidden" id="consult-page">
+            <div class="page-header">
+                <h1 class="page-title" data-key="consult_title">Virtual Consultation</h1>
+            </div>
+            <div class="card">
+                <h2 class="card-title" data-key="consult_start_title">Start a New Consultation</h2>
+                <p data-key="consult_start_desc" style="margin: 10px 0 20px;">Connect with a certified doctor instantly via video call.</p>
+                <button class="form-btn btn-primary" style="width: auto; padding: 12px 30px;">
+                    <i class="fas fa-video"></i> <span data-key="consult_start_button">Find a Doctor Now</span>
+                </button>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title" data-key="consult_history_title">Consultation History</h2>
+                </div>
+                <div class="activity-list">
+                    <div class="activity-item">
+                         <div class="activity-icon"><i class="fas fa-user-md"></i></div>
+                         <div class="activity-content">
+                             <h4>Dr. Smith - General Physician</h4>
+                             <p>Date: August 29, 2025</p>
+                             <a href="#" class="view-all">View Details & Prescription</a>
+                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page page-hidden" id="settings-page">
+            <div class="page-header">
+                <h1 class="page-title" data-key="settings_title">Settings</h1>
+            </div>
+            <div class="card">
+                <div class="settings-form">
+                    <div class="form-group" style="display: flex; justify-content: space-between; align-items: center;">
+                        <label data-key="settings_notifications">Email Notifications</label>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="password" data-key="settings_change_password">Change Password</label>
+                        <input type="password" id="password" placeholder="Enter new password">
+                    </div>
+                     <button type="submit" class="form-btn btn-primary" style="width: auto; padding: 10px 25px;">
+                         <span data-key="settings_save_button">Save Changes</span>
+                     </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+    <button id="speaking-assistant-btn" class="assistant-fab" aria-label="Activate Speaking Assistant">
+        <i class="fas fa-microphone-alt"></i>
+    </button>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const translations = {
+                'en': {
+                    'nav_dashboard': 'Dashboard', 'nav_hospitals': 'Hospitals', 'nav_card': 'QuickAid Card', 'nav_records': 'Health Records', 'nav_profile': 'Profile', 'nav_medications': 'Medications', 'nav_consult': 'Virtual Consult', 'nav_settings': 'Settings',
+                    'ai_prediction': 'AI Health Prediction', 'risk_low': 'Low', 'risk_level': 'Risk Level',
+                    'emergency_title': 'Emergency', 'emergency_desc': 'Press the button below to alert nearby hospitals.', 'emergency_button': 'Emergency Alert',
+                    'search_placeholder': 'Search for hospitals, doctors, services...', 'premium_member': 'Premium Member',
+                    'dashboard_title': 'Health Dashboard', 'today_date': 'Wednesday, September 10, 2025',
+                    'stat_hr': 'Heart Rate', 'stat_bp': 'Blood Pressure', 'stat_temp': 'Body Temperature', 'stat_steps': 'Steps Today',
+                    'recent_activity': 'Recent Activity', 'view_all': 'View All', 'activity_med_taken': 'Medication Taken', 'activity_consult': 'Doctor Consultation', 'upcoming_appointments': 'Upcoming Appointments',
+                    'hospitals_title': 'Nearby Hospitals', 'km_away': 'km away', 'ai_predicts': 'AI Predicts: ~15 min wait', 'bed_availability': 'Bed Availability', 'icu_beds': 'ICU Beds', 'normal_beds': 'Normal Beds', 'blood_bank_status': 'Blood Bank Status', 'units': 'units',
+                    'card_title': 'Unlock Premium Healthcare with the QuickAid Card', 'card_subtitle': 'Your one-stop solution for priority services, digital records, and exclusive discounts.',
+                    'feature_priority': 'Priority Access', 'feature_priority_desc': 'Get priority appointments and reduced waiting times at our network hospitals.',
+                    'feature_discounts': 'Exclusive Discounts', 'feature_discounts_desc': 'Enjoy up to 20% off on consultations, lab tests, and pharmacy bills.',
+                    'feature_records': 'Secure Digital Records', 'feature_records_desc': 'Access all your health records securely from anywhere, anytime.',
+                    'get_card_today': 'Get Your QuickAid Card Today!', 'get_card_desc': 'Join thousands of members enjoying seamless healthcare. Annual subscription at just ₹999.', 'buy_now': 'Buy Now',
+                    'records_title': "John Doe's Health Records", 'record_diagnosis': 'Diagnosis:', 'record_prescription': 'Prescription:', 'record_download': 'Download Prescription',
+                    'profile_title': 'User Profile', 'profile_email': 'Email:', 'profile_phone': 'Phone:', 'profile_dob': 'Date of Birth:', 'profile_blood': 'Blood Group:', 'profile_address': 'Address:', 'emergency_contact_title': 'Emergency Contact', 'profile_name': 'Name:', 'profile_relation': 'Relation:',
+                    'medications_title': 'My Medications', 'current_meds_title': 'Current Prescriptions',
+                    'consult_title': 'Virtual Consultation', 'consult_start_title': 'Start a New Consultation', 'consult_start_desc': 'Connect with a certified doctor instantly via video call.', 'consult_start_button': 'Find a Doctor Now', 'consult_history_title': 'Consultation History',
+                    'settings_title': 'Settings', 'settings_notifications': 'Email Notifications', 'settings_change_password': 'Change Password', 'settings_save_button': 'Save Changes',
+                    'assistant_welcome': "Welcome to Quick Aid. I can assist you with basic navigation. Please use the sidebar to visit the Dashboard, check nearby Hospitals, learn about the Quick Aid Card, or view your Health Records."
+                },
+                'hi': {
+                    'nav_dashboard': 'डैशबोर्ड', 'nav_hospitals': 'अस्पताल', 'nav_card': 'क्विकएड कार्ड', 'nav_records': 'स्वास्थ्य रिकॉर्ड', 'nav_profile': 'प्रोफ़ाइल', 'nav_medications': 'दवाएं', 'nav_consult': 'वर्चुअल परामर्श', 'nav_settings': 'सेटिंग्स',
+                    'ai_prediction': 'एआई स्वास्थ्य भविष्यवाणी', 'risk_low': 'कम', 'risk_level': 'जोखिम स्तर',
+                    'emergency_title': 'आपातकालीन', 'emergency_desc': 'आस-पास के अस्पतालों को सचेत करने के लिए नीचे दिए गए बटन को दबाएं।', 'emergency_button': 'आपातकालीन चेतावनी',
+                    'search_placeholder': 'अस्पताल, डॉक्टर, सेवाओं के लिए खोजें...', 'premium_member': 'प्रीमियम सदस्य',
+                    'dashboard_title': 'स्वास्थ्य डैशबोर्ड', 'today_date': 'बुधवार, 10 सितंबर, 2025',
+                    'stat_hr': 'हृदय गति', 'stat_bp': 'रक्त चाप', 'stat_temp': 'शरीर का तापमान', 'stat_steps': 'आज के कदम',
+                    'recent_activity': 'हाल की गतिविधि', 'view_all': 'सभी देखें', 'activity_med_taken': 'दवा ली गई', 'activity_consult': 'डॉक्टर से परामर्श', 'upcoming_appointments': 'आगामी मुलाकातें',
+                    'hospitals_title': 'आस-पास के अस्पताल', 'km_away': 'किमी दूर', 'ai_predicts': 'एआई भविष्यवाणी: ~15 मिनट प्रतीक्षा', 'bed_availability': 'बिस्तर की उपलब्धता', 'icu_beds': 'आईसीयू बिस्तर', 'normal_beds': 'सामान्य बिस्तर', 'blood_bank_status': 'ब्लड बैंक स्थिति', 'units': 'यूनिट',
+                    'card_title': 'क्विकएड कार्ड के साथ प्रीमियम हेल्थकेयर अनलॉक करें', 'card_subtitle': 'प्राथमिकता सेवाओं, डिजिटल रिकॉर्ड और विशेष छूट के लिए आपका वन-स्टॉप समाधान।',
+                    'feature_priority': 'प्राथमिकता पहुंच', 'feature_priority_desc': 'हमारे नेटवर्क अस्पतालों में प्राथमिकता से अपॉइंटमेंट और कम प्रतीक्षा समय प्राप्त करें।',
+                    'feature_discounts': 'विशेष छूट', 'feature_discounts_desc': 'परामर्श, लैब टेस्ट और फार्मेसी बिल पर 20% तक की छूट का आनंद लें।',
+                    'feature_records': 'सुरक्षित डिजिटल रिकॉर्ड', 'feature_records_desc': 'कहीं से भी, कभी भी अपने सभी स्वास्थ्य रिकॉर्ड सुरक्षित रूप से एक्सेस करें।',
+                    'get_card_today': 'आज ही अपना क्विकएड कार्ड प्राप्त करें!', 'get_card_desc': 'निर्बाध स्वास्थ्य सेवा का आनंद ले रहे हजारों सदस्यों से जुड़ें। वार्षिक सदस्यता सिर्फ ₹999 में।', 'buy_now': 'अभी खरीदें',
+                    'records_title': 'जॉन डो के स्वास्थ्य रिकॉर्ड', 'record_diagnosis': 'निदान:', 'record_prescription': 'पर्चे:', 'record_download': 'पर्ची डाउनलोड करें',
+                    'profile_title': 'उपयोगकर्ता प्रोफ़ाइल', 'profile_email': 'ईमेल:', 'profile_phone': 'फ़ोन:', 'profile_dob': 'जन्म तिथि:', 'profile_blood': 'रक्त समूह:', 'profile_address': 'पता:', 'emergency_contact_title': 'आपातकालीन संपर्क', 'profile_name': 'नाम:', 'profile_relation': 'रिश्ता:',
+                    'medications_title': 'मेरी दवाएं', 'current_meds_title': 'वर्तमान नुस्खे',
+                    'consult_title': 'वर्चुअल परामर्श', 'consult_start_title': 'एक नया परामर्श शुरू करें', 'consult_start_desc': 'वीडियो कॉल के माध्यम से तुरंत एक प्रमाणित डॉक्टर से जुड़ें।', 'consult_start_button': 'अभी एक डॉक्टर खोजें', 'consult_history_title': 'परामर्श इतिहास',
+                    'settings_title': 'सेटिंग्स', 'settings_notifications': 'ईमेल सूचनाएं', 'settings_change_password': 'पासवर्ड बदलें', 'settings_save_button': 'बदलाव सहेजें',
+                    'assistant_welcome': "क्विक एड में आपका स्वागत है। मैं आपको बुनियादी नेविगेशन में सहायता कर सकता हूं। कृपया डैशबोर्ड पर जाने, आस-पास के अस्पतालों की जांच करने, क्विक एड कार्ड के बारे में जानने या अपने स्वास्थ्य रिकॉर्ड देखने के लिए साइडबार का उपयोग करें।"
+                }
+            };
+
+            const sidebarLinks = document.querySelectorAll('.sidebar-link');
+            const pages = document.querySelectorAll('.page');
+            const assistantBtn = document.getElementById('speaking-assistant-btn');
+            const langSwitcher = document.getElementById('lang-switcher');
+
+            function setLanguage(lang) {
+                document.querySelectorAll('[data-key]').forEach(element => {
+                    const key = element.getAttribute('data-key');
+                    if (translations[lang] && translations[lang][key]) {
+                        element.innerText = translations[lang][key];
+                    }
+                });
+                document.querySelectorAll('[data-key-placeholder]').forEach(element => {
+                    const key = element.getAttribute('data-key-placeholder');
+                    if (translations[lang] && translations[lang][key]) {
+                        element.placeholder = translations[lang][key];
+                    }
+                });
+                document.documentElement.lang = lang;
+                localStorage.setItem('language', lang);
+                langSwitcher.value = lang;
+            }
+
+            function showPage(pageId) {
+                const currentActiveLink = document.querySelector('.sidebar-link.active');
+                if (currentActiveLink) {
+                    currentActiveLink.classList.remove('active');
+                }
+                const newActiveLink = document.querySelector(`.sidebar-link[href="#${pageId.replace('-page','')}"]`);
+                if (newActiveLink) {
+                    newActiveLink.classList.add('active');
+                }
+                pages.forEach(page => page.classList.add('page-hidden'));
+                const targetPage = document.getElementById(pageId);
+                if(targetPage) {
+                    targetPage.classList.remove('page-hidden');
+                }
+            }
+            
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // UPDATED: No more login check, directly show the page
+                    const targetPageId = this.getAttribute('href').substring(1) + '-page';
+                    showPage(targetPageId);
+                });
+            });
+
+            function speak(text, lang) {
+                window.speechSynthesis.cancel();
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = lang === 'hi' ? 'hi-IN' : 'en-US';
+                    utterance.rate = 0.9;
+                    window.speechSynthesis.speak(utterance);
+                } else {
+                    alert("Sorry, your browser does not support text-to-speech.");
+                }
+            }
+            
+            if (assistantBtn) {
+                assistantBtn.addEventListener('click', function() {
+                    const currentLang = localStorage.getItem('language') || 'en';
+                    const welcomeMessage = translations[currentLang]['assistant_welcome'];
+                    speak(welcomeMessage, currentLang);
+                });
+            }
+            
+            if (langSwitcher) {
+                langSwitcher.addEventListener('change', (event) => {
+                    setLanguage(event.target.value);
+                });
+            }
+
+            showPage('dashboard-page');
+            const savedLang = localStorage.getItem('language') || 'en';
+            setLanguage(savedLang);
+        });
+    </script>
+</body>
+</html>
